@@ -8,26 +8,28 @@ import java.sql.*;
 public class AccountDAO {
 
 
-    public Account getAccountByUser(String username){
+    public Account loginAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
-        Account account = new Account();
+        Account loginAccount = new Account();
         try {
-            String sql = "SELECT * FROM account WHERE username = ?;";
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1,account.getUsername());
+            preparedStatement.setString(2,account.getPassword());
             ResultSet rs = preparedStatement.executeQuery();
-            account.setAccount_id(rs.getInt("account_id"));
-            account.setUsername(rs.getString("username"));
-            account.setPassword(rs.getString("password"));    
+            if(rs.next()){
+                 loginAccount.setAccount_id(rs.getInt("account_id"));
+                 loginAccount.setUsername(rs.getString("username"));
+                 loginAccount.setPassword(rs.getString("password"));
+            }
+            return loginAccount;    
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return account;
+        return null;
     }
     public Account registerUser(Account account){
         Connection connection = ConnectionUtil.getConnection();
-        System.out.println(account.getUsername());
-        System.out.println(account.getPassword());
         try{
         if(account.getUsername() != ""){
             if(account.getPassword().length() >= 4){
