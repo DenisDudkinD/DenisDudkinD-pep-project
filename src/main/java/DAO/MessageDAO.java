@@ -37,8 +37,8 @@ public class MessageDAO {
         List<Message> messages = new ArrayList<>();
         try {
             String sql = "SELECT * FROM message;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Message message = new Message(rs.getInt("message_id"),rs.getInt("posted_by"),rs.getString("message_text"),rs.getLong("time_posted_epoch"));
                 messages.add(message);
@@ -71,10 +71,31 @@ public class MessageDAO {
             String sql = "DELETE FROM message WHERE message_id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,message_id);
-
+            ps.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
 
     }
+    public Boolean updateMessageById(String message_text, int message_id){
+        Connection connection = ConnectionUtil.getConnection();
+        Boolean updated = false;
+
+        try {
+            if(message_text.length() <= 255){
+                if(message_text != ""){
+                     String sql = "UPDATE message SET message_text = ? WHERE message_id = ?;";
+                     PreparedStatement ps = connection.prepareStatement(sql);
+                     ps.setString(1,message_text);
+                     ps.setInt(2,message_id);
+                     ps.executeUpdate();
+                     updated = true;
+                     return updated;
+                }}
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return updated;
+    }
+
 }

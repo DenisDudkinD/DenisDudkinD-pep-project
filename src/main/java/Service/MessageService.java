@@ -29,4 +29,13 @@ public class MessageService {
         messageDAO.deleteMessageById(message_id);
         return message;
     }
+    public Message updateMessageById(String message_text, int message_id){
+        Boolean updated = messageDAO.updateMessageById(message_text, message_id);
+        if(updated){
+        System.out.println(updated);
+        return messageDAO.getMessageById(message_id);
+        }
+        System.out.println(updated);
+        return null;
+    }
 }
