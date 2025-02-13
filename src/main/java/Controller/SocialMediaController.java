@@ -32,13 +32,13 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/register", this::registerHandler);
-        app.get("example-endpoint", this::exampleHandler);
         app.post("/login", this::loginHandler);
         app.post("/messages",this::postMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
         app.patch("/messages/{message_id}", this::updateMessageByIdHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByUser);
         return app;
     }
 
@@ -113,4 +113,10 @@ public class SocialMediaController {
             ctx.status(400);
         }
     }
+    private void getMessagesByUser(Context ctx) {
+        int user_id = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> messages = messageService.getMessagesByUser(user_id);
+        ctx.json(messages);
+    }
+    
 }
