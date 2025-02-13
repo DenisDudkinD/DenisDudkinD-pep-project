@@ -6,6 +6,7 @@ import Model.Account;
 import Model.Message;
 import Service.MessageService;
 import Service.AccountService;
+import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,6 +35,7 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/login", this::loginHandler);
         app.post("/messages",this::postMessageHandler);
+        app.get("/messages", this::getAllMessagesHandler);
         return app;
     }
 
@@ -74,6 +76,10 @@ public class SocialMediaController {
         }else{
             ctx.status(400);
         }
+    }
+    private void getAllMessagesHandler(Context ctx)  {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
     }
 
 }
